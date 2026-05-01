@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favour Nwabude | Senior Network Infrastructure Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0d1318;
+    --surface2: #111820;
+    --border: #1a2535;
+    --accent: #00d4ff;
+    --accent2: #0066ff;
+    --accent3: #00ff9d;
+    --text: #cdd8e3;
+    --text-dim: #5a7080;
+    --text-bright: #f0f8ff;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* CANVAS BACKGROUND */
+  #network-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* LAYOUT */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(8,12,16,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 58px;
+    position: relative;
+  }
+
+  .hero-inner {
+    padding: 80px 0;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent3);
+  }
+
+  .hero-name {
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .hero-name span {
+    display: block;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-title {
+    font-family: var(--mono);
+    font-size: clamp(12px, 1.6vw, 16px);
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    margin: 24px 0 36px;
+    max-width: 560px;
+    line-height: 1.8;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+
+  .btn-primary:hover {
+    background: var(--text-bright);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 28px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  /* STATS STRIP */
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .stat {
+    background: var(--surface);
+    padding: 20px 24px;
+    position: relative;
+  }
+
+  .stat-num {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 90px 0;
+    position: relative;
+  }
+
+  .section-header {
+    margin-bottom: 52px;
+  }
+
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .section-divider {
+    width: 48px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin-top: 16px;
+  }
+
+  /* ACHIEVEMENTS */
+  #achievements { background: transparent; }
+
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .ach-card {
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+  }
+
+  .ach-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.35s ease;
+  }
+
+  .ach-card:hover::before { height: 100%; }
+  .ach-card:hover { background: var(--surface2); }
+
+  .ach-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .ach-metric {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .ach-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* SKILLS */
+  #skills { background: transparent; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .skill-group {
+    background: var(--surface);
+    padding: 28px 24px;
+    transition: background 0.2s;
+  }
+
+  .skill-group:hover { background: var(--surface2); }
+
+  .skill-group-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .skill-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 4px 9px;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* EXPERIENCE */
+  #experience { background: transparent; }
+
+  .exp-timeline {
+    position: relative;
+  }
+
+  .exp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .exp-item {
+    padding-left: 36px;
+    padding-bottom: 52px;
+    position: relative;
+  }
+
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  .exp-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+
+  .exp-role {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.01em;
+  }
+
+  .exp-period {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 0.1em;
+    background: rgba(0,255,157,0.07);
+    border: 1px solid rgba(0,255,157,0.2);
+    padding: 3px 10px;
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+
+  .exp-org {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .exp-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .exp-points li {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.7;
+    display: flex;
+    gap: 10px;
+  }
+
+  .exp-points li::before {
+    content: '//';
+    color: var(--accent);
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  /* PROJECT SPOTLIGHT */
+  #project {
+    background: transparent;
+  }
+
+  .project-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    padding: 48px 44px;
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .project-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: rgba(0,255,157,0.07);
+    border: 1px solid rgba(0,255,157,0.2);
+    padding: 5px 12px;
+    margin-bottom: 24px;
+  }
+
+  .project-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .project-desc {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.8;
+    max-width: 680px;
+    margin-bottom: 32px;
+  }
+
+  .project-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    max-width: 560px;
+  }
+
+  .pm {
+    background: var(--surface2);
+    padding: 18px 20px;
+    text-align: center;
+  }
+
+  .pm-val {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .pm-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* CERTS & EDUCATION */
+  #certs { background: transparent; }
+
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .cert-card {
+    background: var(--surface);
+    padding: 28px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    transition: background 0.2s;
+  }
+
+  .cert-card:hover { background: var(--surface2); }
+
+  .cert-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .cert-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .cert-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .cert-status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    margin-top: 8px;
+  }
+
+  .status-issued {
+    color: var(--accent3);
+    background: rgba(0,255,157,0.07);
+    border: 1px solid rgba(0,255,157,0.2);
+  }
+
+  .status-progress {
+    color: #ffb400;
+    background: rgba(255,180,0,0.07);
+    border: 1px solid rgba(255,180,0,0.2);
+  }
+
+  /* CONTACT */
+  #contact {
+    background: transparent;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .contact-headline {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .contact-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    text-decoration: none;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--surface2);
+  }
+
+  .contact-link-icon {
+    font-size: 14px;
+    width: 18px;
+    text-align: center;
+  }
+
+  .avail-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    background: rgba(0,255,157,0.05);
+    border: 1px solid rgba(0,255,157,0.2);
+    padding: 8px 14px;
+    margin-bottom: 24px;
+  }
+
+  .dot-pulse {
+    width: 6px;
+    height: 6px;
+    background: var(--accent3);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.6); }
+  }
+
+  .target-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .role-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.2);
+    background: rgba(0,212,255,0.04);
+    padding: 5px 10px;
+    letter-spacing: 0.05em;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-mono {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .achievements-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .certs-grid { grid-template-columns: 1fr; }
+    .contact-inner { grid-template-columns: 1fr; }
+    .project-metrics { grid-template-columns: repeat(3, 1fr); }
+    .nav-links { display: none; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<canvas id="network-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <div class="nav-logo">// NWABUDE FAVOUR</div>
+    <ul class="nav-links">
+      <li><a href="#achievements">Achievements</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#project">Project</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="wrapper">
+    <div class="hero-inner">
+      <div class="hero-tag">Senior Network Infrastructure Engineer</div>
+      <h1 class="hero-name">
+        Nwabude<br>
+        <span>Favour</span>
+      </h1>
+      <p class="hero-title">
+        5+ years architecting enterprise networks, hybrid WAN systems, and private cloud<br>
+        environments across education, government, and ministry sectors — with documented<br>
+        99%+ uptime and zero critical exam disruptions.
+      </p>
+      <div class="hero-ctas">
+        <a href="mailto:nwabudefavour@gmail.com" class="btn-primary">&#x2192; Get In Touch</a>
+        <a href="https://linkedin.com/in/favour-nwabude-940678144" target="_blank" class="btn-outline">LinkedIn Profile</a>
+      </div>
+
+      <div class="hero-stats fade-in">
+        <div class="stat">
+          <div class="stat-num">5+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">99%</div>
+          <div class="stat-label">Uptime Record</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">200+</div>
+          <div class="stat-label">Concurrent Users</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Exam Disruptions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="wrapper">
+    <div class="section-header fade-in">
+      <div class="section-tag">// 01 — Key Achievements</div>
+      <h2 class="section-title">Results That Speak</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="achievements-grid fade-in">
+      <div class="ach-card">
+        <div class="ach-num">01 // JAMB CBT</div>
+        <div class="ach-metric">99%</div>
+        <div class="ach-text">Uptime across all JAMB exam sessions — 200+ simultaneous candidates, zero disruptions over a 2-year operational period.</div>
+      </div>
+      <div class="ach-card">
+        <div class="ach-num">02 // WAN FAILOVER</div>
+        <div class="ach-metric">60%</div>
+        <div class="ach-text">Reduction in connectivity incidents after deploying Starlink Gen 3 + MikroTik RB4011 hybrid WAN, eliminating ISP single-point-of-failure.</div>
+      </div>
+      <div class="ach-card">
+        <div class="ach-num">03 // PRIVATE CLOUD</div>
+        <div class="ach-metric">$0</div>
+        <div class="ach-text">Annual cloud subscription cost after architecting a TrueNAS private cloud — increasing staff data accessibility by 90%.</div>
+      </div>
+      <div class="ach-card">
+        <div class="ach-num">04 // FAULT RESOLUTION</div>
+        <div class="ach-metric">75%</div>
+        <div class="ach-text">Faster fault resolution — from 40 minutes down to under 10 minutes — through structured SOPs and proactive monitoring.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrapper">
+    <div class="section-header fade-in">
+      <div class="section-tag">// 02 — Core Competencies</div>
+      <h2 class="section-title">Technical Stack</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="skills-grid fade-in">
+      <div class="skill-group">
+        <div class="skill-group-title">Network Architecture</div>
+        <div class="skill-tags">
+          <span class="skill-tag">LAN/WAN Design</span>
+          <span class="skill-tag">VLAN Segmentation</span>
+          <span class="skill-tag">Inter-VLAN Routing</span>
+          <span class="skill-tag">Hybrid Topology</span>
+          <span class="skill-tag">OSPFv2</span>
+          <span class="skill-tag">STP</span>
+          <span class="skill-tag">EtherChannel</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Routing & Switching</div>
+        <div class="skill-tags">
+          <span class="skill-tag">MikroTik RouterOS</span>
+          <span class="skill-tag">Cisco IOS</span>
+          <span class="skill-tag">VTP</span>
+          <span class="skill-tag">ACLs</span>
+          <span class="skill-tag">NAT</span>
+          <span class="skill-tag">DHCP Relay</span>
+          <span class="skill-tag">QoS Policies</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Wireless Infrastructure</div>
+        <div class="skill-tags">
+          <span class="skill-tag">TP-Link Omada</span>
+          <span class="skill-tag">Omada SDN Controller</span>
+          <span class="skill-tag">SSID Segmentation</span>
+          <span class="skill-tag">Captive Portal</span>
+          <span class="skill-tag">WPA2 Enterprise</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">WAN & Connectivity</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Starlink Gen 3</span>
+          <span class="skill-tag">ISP Provisioning</span>
+          <span class="skill-tag">PPPoE</span>
+          <span class="skill-tag">DNS</span>
+          <span class="skill-tag">Bandwidth Mgmt</span>
+          <span class="skill-tag">Hotspot Setup</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Cloud & Storage</div>
+        <div class="skill-tags">
+          <span class="skill-tag">TrueNAS</span>
+          <span class="skill-tag">NAS Configuration</span>
+          <span class="skill-tag">AWS Fundamentals</span>
+          <span class="skill-tag">User Access Mgmt</span>
+          <span class="skill-tag">Private Cloud</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Tools & Security</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Cisco CML</span>
+          <span class="skill-tag">Packet Tracer</span>
+          <span class="skill-tag">GNS3</span>
+          <span class="skill-tag">SSH Hardening</span>
+          <span class="skill-tag">CCTV / IP Camera</span>
+          <span class="skill-tag">DVR/NVR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrapper">
+    <div class="section-header fade-in">
+      <div class="section-tag">// 03 — Experience</div>
+      <h2 class="section-title">Career Timeline</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="exp-timeline">
+      <div class="exp-item fade-in">
+        <div class="exp-meta">
+          <div class="exp-role">Senior Network & Cloud Infrastructure Engineer</div>
+          <div class="exp-period">2022 – 2026</div>
+        </div>
+        <div class="exp-org">City of Jesus International Ministry — Abuja, Nigeria</div>
+        <ul class="exp-points">
+          <li>Engineered a hybrid WAN integrating Starlink Gen 3 with MikroTik RB4011 failover routing, serving 100+ concurrent users and eliminating single-provider downtime risk.</li>
+          <li>Deployed TrueNAS private cloud replacing third-party storage, cutting annual cloud costs to zero and improving data accessibility by 60%.</li>
+          <li>Rolled out TP-Link Omada wireless infrastructure with centralized SDN controller, achieving full campus coverage — an 80% improvement over prior wireless reach.</li>
+          <li>Implemented VLAN-based segmentation across admin, operational, and guest traffic, reducing internal security incidents by an estimated 40%.</li>
+          <li>Maintained network SLA above 99% across all operational periods through structured monitoring and incident response procedures.</li>
+        </ul>
+      </div>
+
+      <div class="exp-item fade-in">
+        <div class="exp-meta">
+          <div class="exp-role">Network Infrastructure Engineer</div>
+          <div class="exp-period">2020 – 2022</div>
+        </div>
+        <div class="exp-org">Rochas Foundation CBT Center — Nigeria</div>
+        <ul class="exp-points">
+          <li>Architected JAMB-compliant hybrid CBT infrastructure for 200+ simultaneous exam sessions — 99% uptime, zero disruptions over two years.</li>
+          <li>Engineered offline failover capability ensuring full exam continuity during internet outages, maintaining 100% JAMB technical compliance.</li>
+          <li>Deployed structured cabling, managed switches, and full network segmentation — reducing cable fault incidents by 99%.</li>
+          <li>Cut average fault resolution time from 40 minutes to under 10 minutes through documented SOPs and preventive maintenance protocols.</li>
+        </ul>
+      </div>
+
+      <div class="exp-item fade-in">
+        <div class="exp-meta">
+          <div class="exp-role">IT Network Consultant</div>
+          <div class="exp-period">2018 – 2020</div>
+        </div>
+        <div class="exp-org">Foretrust Digital Consulting Ltd — Nigeria</div>
+        <ul class="exp-points">
+          <li>Delivered end-to-end network deployments across multiple client sites — ISP provisioning, MikroTik config, hotspot setup, and AP installation.</li>
+          <li>Configured MikroTik QoS and bandwidth policies for commercial hotspot environments, enabling per-user monetization controls.</li>
+          <li>Commissioned CCTV surveillance systems for 5+ facilities with full IP camera placement, DVR config, and remote monitoring handover.</li>
+          <li>Reduced average client network downtime by 35% through proactive monitoring setup and structured troubleshooting guides.</li>
+        </ul>
+      </div>
+
+      <div class="exp-item fade-in">
+        <div class="exp-meta">
+          <div class="exp-role">IT Support & Network Technician</div>
+          <div class="exp-period">2016 – 2018</div>
+        </div>
+        <div class="exp-org">Afrihub — Nigeria</div>
+        <ul class="exp-points">
+          <li>Maintained wireless and ISP connectivity for 50+ daily users, sustaining 95%+ uptime across all operational hours.</li>
+          <li>Resolved 90% of reported hardware and network faults within the same business day through systematic diagnostics.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT SPOTLIGHT -->
+<section id="project">
+  <div class="wrapper">
+    <div class="section-header fade-in">
+      <div class="section-tag">// 04 — Standout Project</div>
+      <h2 class="section-title">Flagship Infrastructure Build</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="project-card fade-in">
+      <div class="project-badge">&#x25CF; Flagship Deployment</div>
+      <h3 class="project-title">JAMB Hybrid CBT Infrastructure<br>— Rochas Foundation CBT Center</h3>
+      <p class="project-desc">
+        Single-handedly designed and deployed a JAMB-compliant hybrid CBT network for 200+ simultaneous exam candidates. The architecture included structured LAN cabling, managed switches, a server-client exam delivery system, and an offline failover mechanism that kept all exam sessions running during internet outages. Maintained 99% uptime and zero exam disruptions over a two-year operational period — a direct business outcome measured in candidate throughput and institutional compliance.
+      </p>
+      <div class="project-metrics">
+        <div class="pm">
+          <div class="pm-val">200+</div>
+          <div class="pm-label">Simultaneous Users</div>
+        </div>
+        <div class="pm">
+          <div class="pm-val">99%</div>
+          <div class="pm-label">Uptime Record</div>
+        </div>
+        <div class="pm">
+          <div class="pm-val">2 Yrs</div>
+          <div class="pm-label">Zero Disruptions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTS & EDUCATION -->
+<section id="certs">
+  <div class="wrapper">
+    <div class="section-header fade-in">
+      <div class="section-tag">// 05 — Certifications & Education</div>
+      <h2 class="section-title">Credentials</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="certs-grid fade-in">
+      <div class="cert-card">
+        <div class="cert-icon">&#x2713;</div>
+        <div>
+          <div class="cert-name">CompTIA A+</div>
+          <div class="cert-sub">CompTIA Certification<br>Hardware, Software & Network Support</div>
+          <span class="cert-status status-issued">Issued</span>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">&#x2713;</div>
+        <div>
+          <div class="cert-name">Microsoft Office Tools</div>
+          <div class="cert-sub">Microsoft Certification<br>Productivity & Tools Suite</div>
+          <span class="cert-status status-issued">Issued</span>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">&#x25D4;</div>
+        <div>
+          <div class="cert-name">Cisco CCNA 200-301</div>
+          <div class="cert-sub">Exam-ready: June 2026<br>Active lab work in Cisco CML, 56-day structured study plan</div>
+          <span class="cert-status status-progress">In Progress</span>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">&#x25A1;</div>
+        <div>
+          <div class="cert-name">B.Sc. Computer Science</div>
+          <div class="cert-sub">Madonna University, Elele<br>2014</div>
+          <span class="cert-status status-issued">Completed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrapper">
+    <div class="contact-inner">
+      <div class="fade-in">
+        <div class="avail-badge">
+          <div class="dot-pulse"></div>
+          Available for relocation & remote roles
+        </div>
+        <h2 class="contact-headline">Open to Opportunities Globally</h2>
+        <p class="contact-sub">Targeting senior network, cloud infrastructure, and engineering roles across UAE, Saudi Arabia, Bahrain, Canada, and remote positions worldwide. Immediate relocation availability.</p>
+        <div class="target-roles">
+          <span class="role-tag">Senior Network Engineer</span>
+          <span class="role-tag">Cloud Network Engineer</span>
+          <span class="role-tag">Network Infrastructure Specialist</span>
+          <span class="role-tag">Network Architect (Mid-Senior)</span>
+        </div>
+      </div>
+      <div class="fade-in">
+        <div class="contact-links">
+          <a href="mailto:nwabudefavour@gmail.com" class="contact-link">
+            <span class="contact-link-icon">&#x2709;</span>
+            nwabudefavour@gmail.com
+          </a>
+          <a href="https://linkedin.com/in/favour-nwabude-940678144" target="_blank" class="contact-link">
+            <span class="contact-link-icon">&#x25A3;</span>
+            linkedin.com/in/favour-nwabude-940678144
+          </a>
+          <a href="#" class="contact-link">
+            <span class="contact-link-icon">&#x2316;</span>
+            Abuja, Nigeria — Immediate Relocation Ready
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrapper" style="display:flex; justify-content:space-between; align-items:center; width:100%; padding:0;">
+    <span class="footer-mono">// NWABUDE IZUNNA FAVOUR — PORTFOLIO 2026</span>
+    <span class="footer-mono">Senior Network Infrastructure Engineer</span>
+  </div>
+</footer>
+
+<script>
+// ---- NETWORK CANVAS ----
+const canvas = document.getElementById('network-canvas');
+const ctx = canvas.getContext('2d');
+
+let W, H, nodes = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function createNodes() {
+  nodes = [];
+  const count = Math.floor((W * H) / 18000);
+  for (let i = 0; i < count; i++) {
+    nodes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5
+    });
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  nodes.forEach(n => {
+    n.x += n.vx;
+    n.y += n.vy;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
+  });
+
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 140) {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(0, 212, 255, ${(1 - dist / 140) * 0.35})`;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.6)';
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+resize();
+createNodes();
+draw();
+window.addEventListener('resize', () => { resize(); createNodes(); });
+
+// ---- INTERSECTION OBSERVER ----
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+fadeEls.forEach(el => observer.observe(el));
+
+// Hero visible immediately
+document.querySelector('.hero-stats').classList.add('visible');
+
+// ---- COUNTER ANIMATION ----
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const isDecimal = target % 1 !== 0;
+  const duration = 1400;
+  const step = timestamp => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const val = isDecimal
+      ? (progress * target).toFixed(1)
+      : Math.floor(progress * target);
+    el.textContent = val + suffix;
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+const statsObs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const nums = entry.target.querySelectorAll('.stat-num');
+      const data = [5, 99, 200, 0];
+      const suf = ['+', '%', '+', ''];
+      nums.forEach((el, i) => animateCounter(el, data[i], suf[i]));
+      statsObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+statsObs.observe(document.querySelector('.hero-stats'));
+</script>
+</body>
+</html>
